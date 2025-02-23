@@ -49,7 +49,10 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+			seagreen: "#20C997",
+			seagreenlight: "#66E0B8",
+			seagreenextralight: "#BFF7E3"
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

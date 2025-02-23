@@ -5,8 +5,8 @@ const Footer = () => {
     const currentYear = new Date().getFullYear()
 
     return ( 
-      <footer className="border-t">
-        <div className="p-5 flex-center">
+      <footer className="bg-seagreenextralight border-t">
+        <div className="p-5 flex-center text-gray-900">
             {currentYear} {APP_NAME}. All Rights Reserved 
         </div>
       </footer>
