@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 const HomePage = () => {
   return (
     <>
@@ -5,6 +7,10 @@ const HomePage = () => {
     </>
   )
   
+}
+
+export const metadata: Metadata = {
+  title: "HomePage"
 }
  
 export default HomePage;
