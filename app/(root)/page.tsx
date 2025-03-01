@@ -1,9 +1,12 @@
+import ProductList from "@/components/product/productList";
 import { Metadata } from "next";
 
 const HomePage = () => {
   return (
     <>
-      NextCommerce
+      <ProductList 
+        title="Popular Products"  
+        data={[]}/>
     </>
   )
   

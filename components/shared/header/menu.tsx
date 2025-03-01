@@ -1,6 +1,7 @@
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -29,6 +30,7 @@ const Menu = () => {
               {APP_NAME}
             </div>
           </SheetTitle>
+          <SheetDescription></SheetDescription>
           {/* Categories and website navigations will be added */}
         </SheetContent>
       </Sheet>
