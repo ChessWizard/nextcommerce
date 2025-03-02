@@ -1,11 +1,9 @@
-import { PrismaClient } from '@prisma/client';
 import { extendedProductSchema } from '../validators/product/extendedProductSchema';
 import ProductDTO from '@/types/product/productDTO';
-
-const prisma = new PrismaClient();
+import Database from '@/prisma/adapter';
 
 export async function getPopularProducts(): Promise<ProductDTO[]> {
-    const data = await prisma.product.findMany({
+    const data = await Database.product.findMany({
         where:{
             isFeatured: true
         },
@@ -25,7 +23,5 @@ export async function getPopularProducts(): Promise<ProductDTO[]> {
     const result = extendedProductSchema.array()
                                         .safeParse(data)
                                         .data ?? []
-    await prisma.$disconnect(); 
-
     return result;
 }
