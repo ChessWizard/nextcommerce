@@ -1,12 +1,16 @@
 import ProductList from "@/components/product/productList";
+import { getPopularProducts } from "@/lib/actions/product.actions";
 import { Metadata } from "next";
 
-const HomePage = () => {
+const HomePage = async () => {
+
+  const popularProducts = await getPopularProducts()
+
   return (
     <>
       <ProductList 
         title="Popular Products"  
-        data={[]}/>
+        data={popularProducts}/>
     </>
   )
   

@@ -1,10 +1,11 @@
+import { ProductDTO } from "@/lib/models/product.models";
 import ProductCard from "./productCard";
 
 const ProductList = ({
     title,
     data
 }: {title?: string; 
-    data: any}) => {
+    data: ProductDTO[]}) => {
     
     return ( 
         <div>
@@ -17,7 +18,7 @@ const ProductList = ({
                                          md:grid-cols-3
                                          lg:grid-cols-4"
                     >
-                        {data.map((product: any) => (
+                        {data.map((product: ProductDTO) => (
                             <ProductCard 
                                 key={product.slug}
                                 data={product}

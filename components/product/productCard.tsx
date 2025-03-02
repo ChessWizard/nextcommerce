@@ -2,11 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import ProductPrice from "./productPrice";
+import { ProductDTO } from "@/lib/models/product.models";
 
 const ProductCard = ({
     data,
     hasLazyLoad = true,
-}: {data: any;
+}: {data: ProductDTO;
     hasLazyLoad: boolean;
 }) => {
 
@@ -29,8 +30,9 @@ const ProductCard = ({
                     <div className="flex-between gap-4">
                         <p>{data.rating}</p>
                         {data.stock > 0 ? (
-                            <ProductPrice value={data.price.value}
-                                          currency={data.price.currency}
+                            // TODO: Current currency implementation will be added
+                            <ProductPrice value={data.prices[0].value}
+                                          currency={data.prices[0].currency}
                                           className="text-seagreen"  />
                         ) : (
                             <p className="text-destructive">Out of Stock</p>
