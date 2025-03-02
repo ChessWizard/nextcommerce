@@ -1,4 +1,4 @@
-import { Currency } from "@/constants/enums/currency";
+import { Currency } from "@prisma/client"
 
 export function getCurrencySymbol(currency: Currency): string {
     switch (currency) {

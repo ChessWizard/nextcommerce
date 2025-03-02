@@ -1,21 +1,23 @@
-import { ProductDTO } from "@/lib/models/product.models";
+import ProductDTO from "@/types/product/productDTO";
 import ProductCard from "./productCard";
+import { cn } from "@/lib/utils";
 
-const ProductList = ({
+const ProductListSection = ({
     title,
+    className,
     data
-}: {title?: string; 
+}: {title?: string;
+    className?: string; 
     data: ProductDTO[]}) => {
     
     return ( 
-        <div className="bg-gray-200 px-5 py-5">
+        <div className= {cn(className)}>
             <h2 className="text-xl font-bold mb-4">{title}</h2>
             {data.length > 0 ? 
                 (
-                    <div className="grid gap-4
-                                         grid-cols-1 
-                                         sm:grid-cols-2
-                                         md:grid-cols-3
+                    <div className="grid gap-4 place-items-center
+                                         grid-cols-1
+                                         md:grid-cols-2
                                          lg:grid-cols-5"
                     >
                         {data.map((product: ProductDTO) => (
@@ -37,4 +39,4 @@ const ProductList = ({
      );
 }
  
-export default ProductList;
+export default ProductListSection;

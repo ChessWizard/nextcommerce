@@ -1,6 +1,6 @@
-import { Currency } from "@/constants/enums/currency";
 import { cn } from "@/lib/utils";
 import { getCurrencySymbol } from "@/utils/pricingUtils";
+import { Currency } from "@prisma/client";
 
 const ProductPrice = ({
     value,

@@ -1,4 +1,4 @@
-import ProductList from "@/components/product/productList";
+import ProductListSection from "@/components/product/productListSection";
 import { getPopularProducts } from "@/lib/actions/product.actions";
 import { Metadata } from "next";
 
@@ -8,9 +8,11 @@ const HomePage = async () => {
 
   return (
     <>
-      <ProductList 
+      <ProductListSection 
         title="Popular Products"  
-        data={popularProducts}/>
+        data={popularProducts}
+        className="bg-gray-200 px-5 py-5 rounded-md"
+      />
     </>
   )
   
