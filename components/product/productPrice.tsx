@@ -15,7 +15,7 @@ const ProductPrice = ({
     const [absolute, odd] = displayedPrice.split('.')
 
     return ( 
-        <p className={cn('text-2xl', className)}>
+        <p className={cn('text-lg', 'font-bold', className)}>
             <span className="text-sm align-super">{getCurrencySymbol(currency)}</span>
             {absolute}
             <span className="text-xs align-super">,{odd}</span>

@@ -8,15 +8,15 @@ const ProductList = ({
     data: ProductDTO[]}) => {
     
     return ( 
-        <div>
-            <h2 className="h2-bold mb-4">{title}</h2>
+        <div className="bg-gray-200 px-5 py-5">
+            <h2 className="text-xl font-bold mb-4">{title}</h2>
             {data.length > 0 ? 
                 (
-                    <div className="grid gap-4 
+                    <div className="grid gap-4
                                          grid-cols-1 
                                          sm:grid-cols-2
                                          md:grid-cols-3
-                                         lg:grid-cols-4"
+                                         lg:grid-cols-5"
                     >
                         {data.map((product: ProductDTO) => (
                             <ProductCard 

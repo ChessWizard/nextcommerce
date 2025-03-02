@@ -9,8 +9,6 @@ const LoadingPage = () => {
                     className="h-[50px] w-[50px] 
                                md:h-[70px] md:w-[70px]
                                lg:h-[100px] lg:w-[100px]" 
-                    height={80}
-                    width={80}
                     alt="Loading..." 
               />
         </div>
