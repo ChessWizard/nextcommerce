@@ -1,10 +1,10 @@
 import ProductListSection from "@/components/product/productListSection";
-import { getPopularProducts } from "@/lib/actions/product.actions";
+import { getPopularProductsAsync } from "@/lib/actions/product.actions";
 import { Metadata } from "next";
 
 const HomePage = async () => {
 
-  const popularProducts = await getPopularProducts()
+  const popularProducts = await getPopularProductsAsync()
 
   return (
     <>

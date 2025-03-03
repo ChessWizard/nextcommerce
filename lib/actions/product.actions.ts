@@ -2,7 +2,7 @@ import { extendedProductSchema } from '../validators/product/extendedProductSche
 import ProductDTO from '@/types/product/productDTO';
 import Database from '@/prisma/adapter';
 
-export async function getPopularProducts(): Promise<ProductDTO[]> {
+export async function getPopularProductsAsync(): Promise<ProductDTO[] | []> {
     const data = await Database.product.findMany({
         where:{
             isFeatured: true
@@ -20,8 +20,33 @@ export async function getPopularProducts(): Promise<ProductDTO[]> {
         }
     });
 
-    const result = extendedProductSchema.array()
+    if(!data) return []
+
+    const parseResult = extendedProductSchema.array()
                                         .safeParse(data)
-                                        .data ?? []
-    return result;
+    if(!parseResult.success) return []
+    
+    return parseResult.data
+}
+
+export async function getProductDetailsBySlugAsync(slug: string): Promise<ProductDTO | null> {
+    const data = await Database.product.findFirst({
+        where: { slug },
+        include: {
+            prices: {
+                select: {
+                    id: true,
+                    value: true,
+                    currency: true,
+                },
+            },
+        },
+    })
+
+    if (!data) return null
+
+    const parseResult = extendedProductSchema.safeParse(data)
+    if (!parseResult.success) return null
+
+    return parseResult.data;
 }
