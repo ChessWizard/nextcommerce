@@ -9,21 +9,21 @@ datasource db {
 }
 
 model Product{
-    id String @id @default(uuid()) @db.Uuid
-    name String
-    slug String @unique(map: "ix_product_slug")
-    category String
-    images String[]
-    brand String
-    description String
-    stock Int
-    prices Price[]
-    rating Decimal @default(0) @db.Decimal(3,2)
+    id              String @id @default(uuid()) @db.Uuid
+    name            String
+    slug            String @unique(map: "ix_product_slug")
+    category        String
+    images          String[]
+    brand           String
+    description     String
+    stock           Int
+    prices          Price[]
+    rating          Decimal @default(0) @db.Decimal(3,2)
     numberOfReviews Int @default(0)
-    isFeatured Boolean
-    banner String?
-    createdAt DateTime @default(now()) @db.Timestamp(6)
-    modifiedAt DateTime? @updatedAt @db.Timestamp(6)
+    isFeatured      Boolean
+    banner          String?
+    createdAt       DateTime @default(now()) @db.Timestamp(6)
+    modifiedAt      DateTime? @updatedAt @db.Timestamp(6)
 }
 
 enum Currency{
@@ -32,10 +32,79 @@ enum Currency{
 }
 
 model Price{
-  id String @id @default(uuid()) @db.Uuid
-  value Decimal @default(0) @db.Decimal(12,2)
-  currency Currency
+  id         String @id @default(uuid()) @db.Uuid
+  value      Decimal @default(0) @db.Decimal(12,2)
+  currency   Currency
   
   productId  String @default(uuid()) @db.Uuid
   product    Product  @relation(fields: [productId], references: [id])
+}
+
+model User {
+  id            String @id @default(uuid()) @db.Uuid
+  name          String? @default("UNKNOWN")
+  surname       String? @default("UNKNOWN")
+  email         String?   @unique(map: "ix_user_email")
+  emailVerified DateTime? @db.Timestamp(6)
+  phone         String?   @unique(map: "ix_user_phone")
+  phoneVerified DateTime? @db.Timestamp(6)
+  image         String?
+  password      String?
+  role          Role  @default(USER)
+  address       Json? @db.Json
+  paymentMethod String
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  modifiedAt    DateTime? @updatedAt @db.Timestamp(6)
+  accounts      Account[]
+  sessions      Session[]
+}
+
+enum Role {
+  ADMIN
+  USER
+  EDITOR
+}
+
+model Account {
+  userId             String @default(uuid()) @db.Uuid
+  user               User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountType        AccountType @default(INDIVIDUAL)
+  provider           String
+  providerAccountId  String  @default(uuid()) @db.Uuid
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  createdAt          DateTime @default(now()) @db.Timestamp(6)
+  modifiedAt         DateTime? @updatedAt @db.Timestamp(6)
+ 
+  @@id([provider, providerAccountId])
+}
+
+enum AccountType {
+  INDIVIDUAL
+  CORPORATE
+}
+
+model Session {
+  id           String @default(uuid()) @db.Uuid
+  sessionToken String   @unique 
+  userId       String @default(uuid()) @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime @db.Timestamp(6)
+
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+  modifiedAt   DateTime? @updatedAt @db.Timestamp(6)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
 }
