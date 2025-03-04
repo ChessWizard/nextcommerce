@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import ProductListSection from "@/components/product/productListSection";
 import { getPopularProductsAsync } from "@/lib/actions/product.actions";
 import { Metadata } from "next";

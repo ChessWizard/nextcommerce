@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getProductDetailsBySlugAsync } from "@/lib/actions/product.actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
