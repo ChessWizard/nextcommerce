@@ -9,35 +9,32 @@ export async function signInWithCredentialsAsync(
   prevState: unknown,
   formData: FormData
 ) {
-  
   const user = signInSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
   });
 
-  if(!user)
-    return Result.Error(UserMessages.Error.NotFound)
+  if (!user) {
+    return Result.Error(UserMessages.Error.NotFound).toJSON();
+  }
 
   try {
-    
-    await signIn('credentials', 
-                 {...user.data, 
-                  redirect: false,
-                  callbackUrl: "/"
-                })
-    const result = Result.Success(user.data, UserMessages.Success.SignIn)
-    return result.toJSON()
-
+    await signIn("credentials", {
+      ...user.data,
+      redirect: false});
+    const result = Result.Success(user.data, UserMessages.Success.SignIn);
+    return result.toJSON();
   } catch (error) {
-    
-    const message = error.cause.err.message === "InvalidPassword" ? UserMessages.Error.InvalidPassword
-                                                                  : UserMessages.Error.NotFound
-
-    const errorResult = Result.Error(message)
-    return errorResult.toJSON()
+    const err = error as any;
+    const message =
+      err?.cause?.err?.message === "InvalidPassword"
+        ? UserMessages.Error.InvalidPassword
+        : UserMessages.Error.NotFound;
+    const errorResult = Result.Error(message);
+    return errorResult.toJSON();
   }
 }
 
-export async function signOutAsync(){
-    await signOut()
+export async function signOutAsync() {
+  await signOut();
 }
