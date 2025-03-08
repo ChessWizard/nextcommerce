@@ -1,3 +1,5 @@
+'use server'
+
 import { extendedProductSchema } from '../validators/product/extendedProductSchema';
 import ProductDTO from '@/types/product/productDTO';
 import Database from '@/prisma/adapter';

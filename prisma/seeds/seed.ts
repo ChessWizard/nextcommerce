@@ -1,6 +1,7 @@
 import { Currency, PrismaClient } from "@prisma/client"
 import productSeed from "./product-seed"
 import { randomUUID } from "node:crypto"
+import userSeed from "./user-seed"
 
 async function initialize(){
     const prisma = new PrismaClient()
@@ -33,7 +34,9 @@ async function initialize(){
           }
         })
     }
-    console.log("Products seeded")
+
+    await prisma.user.createMany({data: userSeed.users})
+    console.log("Successful!")
 }
 
 initialize()
