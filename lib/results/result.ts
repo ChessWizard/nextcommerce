@@ -4,7 +4,7 @@ import { BusinessMessage } from "./messages/common/businessMessage";
 
 export class Result<TData> extends BaseResult<TData> {
   constructor(
-    data: TData,
+    data: TData | null,
     message: BusinessMessage,
     isSuccessful: boolean,
     errorDto?: ErrorResult
@@ -20,7 +20,7 @@ export class Result<TData> extends BaseResult<TData> {
   ): Result<TData> {
     if (messageArg === undefined) {
       return new Result<TData>(
-        null as any,
+        null,
         dataOrMessage as BusinessMessage,
         true
       );
@@ -33,6 +33,6 @@ export class Result<TData> extends BaseResult<TData> {
   static Error<TData>(
     message: BusinessMessage
   ): Result<TData> {
-    return new Result<TData>(null as any, message, false);
+    return new Result<TData>(null, message, false);
   }
 }
