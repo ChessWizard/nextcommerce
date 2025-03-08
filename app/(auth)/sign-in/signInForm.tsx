@@ -37,7 +37,7 @@ const SignInForm = () => {
         toast.success(message)
       }
     }
-  }, [data]);
+  }, [data, router]);
 
   return (
     <>
