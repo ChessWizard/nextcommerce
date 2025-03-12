@@ -7,11 +7,17 @@ import SignInForm from "./signInForm";
 import { auth } from "@/auth/auth";
 import { redirect } from "next/navigation";
 
-const SignInPage = async () => {
+const SignInPage = async (props: {
+   searchParams: Promise<{
+    callbackUrl: string
+   }>
+}) => {
+
+    const { callbackUrl } = await props.searchParams
 
     const session = await auth()
     if(session){
-        return redirect('/')
+        return redirect(callbackUrl || '/')
     }
 
     return ( 
@@ -49,3 +55,4 @@ export const metadata: Metadata = {
     title: "Sign In",
     description: "Sign in page"
 }
+

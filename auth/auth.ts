@@ -1,64 +1,95 @@
-import NextAuth from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import Database from "@/prisma/adapter"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { compareSync } from "bcrypt-ts-edge"
-import type { NextAuthConfig } from "next-auth"
+import NextAuth, { SessionUserDTO } from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import Database from "@/prisma/adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { compareSync } from "bcrypt-ts-edge";
+import { NextAuthConfig } from "next-auth";
+
 
 export const config = {
-    pages: {
-        signIn: 'sign-in',
-        error: 'sign-in'
+  pages: {
+    signIn: "sign-in",
+    error: "sign-in",
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+  },
+  adapter: PrismaAdapter(Database),
+  providers: [
+    CredentialsProvider({
+      credentials: {
+        email: { type: "email" },
+        password: { type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials) return null;
+
+        const user = await Database.user.findFirst({
+          where: {
+            email: credentials.email as string,
+          },
+        });
+
+        if (!user) throw new Error("UserNotFound");
+
+        const isPasswordMatch = compareSync(
+          credentials.password as string,
+          user.password as string
+        );
+        if (!isPasswordMatch) throw new Error("InvalidPassword");
+
+        return {
+          id: user.id,
+          name: user.name,
+          surname: user.surname,
+          email: user.email,
+          role: user.role,
+        };
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user, trigger, session }: any) {
+      if (user) {
+        token.surname = user.surname;
+        token.role = user.role;
+      }
+
+      if (trigger === "update") {
+        token.email = session.email;
+      }
+
+      return token;
     },
-    session: {
-        strategy: 'jwt',
-        maxAge: 30 * 24 * 60 * 60
-    },
-    adapter: PrismaAdapter(Database),
-    providers: [
-        CredentialsProvider({
-            credentials: {
-                email: { type: 'email' },
-                password: { type: 'password' }
-            },
-            async authorize(credentials) {
-                if(!credentials) return null
+    async session({ session, token }: any) {
 
-                const user = await Database.user.findFirst({
-                    where: {
-                        email: credentials.email as string
-                    }
-                })
-
-                if(!user) 
-                    throw new Error("UserNotFound")
-
-                const isPasswordMatch = compareSync(credentials.password as string, user.password as string)
-                if(!isPasswordMatch)
-                    throw new Error("InvalidPassword")
-
-                return { 
-                         id: user.id,
-                         name: user.name,
-                         surname: user.surname,
-                         email: user.email,
-                         role: user.role
-                       }
-            }
-        })
-    ],
-    callbacks: {
-        async session({ session, user, trigger, token }: any) {
-
-            session.user.id = token.sub
-
-            if(trigger === 'update'){
-                session.user.name = user.name
-            }
-
-            return session
+        const sessionUser: SessionUserDTO = {
+            id: token.id || token.sub,
+            name: token.name,
+            surname: token.surname,
+            email: token.email,
+            role: token.role
         }
-    }
-} satisfies NextAuthConfig
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config)
+        session.user = sessionUser
+        return session;
+    },
+  },
+} satisfies NextAuthConfig;
+
+declare module "next-auth" {
+    interface SessionUserDTO {
+      id: string;
+      name: string;
+      surname: string;
+      email: string;
+      role: string;
+    }
+  
+    interface Session {
+      user: SessionUserDTO;
+    }
+  }
+
+export const { handlers, auth, signIn, signOut } = NextAuth(config);

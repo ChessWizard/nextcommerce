@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { toast, Toaster } from "sonner";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 const SignInForm = () => {
@@ -27,13 +27,15 @@ const SignInForm = () => {
         </Button>
     )
   }
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/'
   
   useEffect(() => {
     if (data) {
       const message = data?.message?.message;
       if (!data.isSuccessful) toast.error(message);
       else {
-        router.push("/")
+        router.push(callbackUrl)
         toast.success(message)
       }
     }
