@@ -55,7 +55,7 @@ export async function signUpUserAsync(
     if (user?.error) {
         const errors = Object.keys(user.error.errors)
                              .map((field => user.error.errors[parseInt(field)].message))
-        return Result.Error(UserMessages.Error.Failed, new ErrorResult(errors).toJSON()).toJSON();
+        return Result.Error(UserMessages.Error.Failed, new ErrorResult(errors)).toJSON();
     }
 
     const userData = user.data

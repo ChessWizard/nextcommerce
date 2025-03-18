@@ -24,7 +24,7 @@ export class BaseResult<TData> {
       data: this.data,
       message: this.message,
       isSuccessful: this.isSuccessful,
-      errorDto: this.errorDto,
+      errorDto: this.errorDto?.toJSON(),
     };
   }
 }
