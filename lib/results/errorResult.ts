@@ -1,13 +1,13 @@
 export class ErrorResult {
-    errors: string[];
+    errors: string | string[];
     isShow: boolean;
   
-    constructor(errorOrErrors?: string | string[], isShow: boolean = false) {
-      if (typeof errorOrErrors === "string") {
-        this.errors = [errorOrErrors];
+    constructor(errors: string | string[], isShow: boolean = false) {
+      if (typeof errors === "string") {
+        this.errors = [errors];
         this.isShow = isShow;
-      } else if (Array.isArray(errorOrErrors)) {
-        this.errors = errorOrErrors;
+      } else if (Array.isArray(errors)) {
+        this.errors = errors;
         this.isShow = isShow;
       } else {
         this.errors = [];

@@ -38,7 +38,7 @@ const UserButton = (
                     </Button>
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 p-3" align='end' forceMount>
+            <DropdownMenuContent className="w-56 p-3" align='center' forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                         <div className="text-sm font-medium leading-none">

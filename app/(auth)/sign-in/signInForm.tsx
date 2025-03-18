@@ -9,6 +9,7 @@ import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { toast, Toaster } from "sonner";
 import { useRouter, useSearchParams } from 'next/navigation';
+import PasswordInput from "@/components/user/passwordInput";
 
 
 const SignInForm = () => {
@@ -61,13 +62,7 @@ const SignInForm = () => {
             <Label htmlFor="password" className="font-bold">
               Password
             </Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="password"
-            />
+            <PasswordInput name="password" />
           </div>
           <div className="pt-5">
             <SignInButton />

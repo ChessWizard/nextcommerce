@@ -30,9 +30,11 @@ export class Result<TData> extends BaseResult<TData> {
   }
 
   static Error<TData>(message: BusinessMessage): Result<TData>;
+  static Error<TData>(message: BusinessMessage, error: ErrorResult): Result<TData>;
   static Error<TData>(
-    message: BusinessMessage
+    message: BusinessMessage,
+    error?: ErrorResult
   ): Result<TData> {
-    return new Result<TData>(null, message, false);
+    return new Result<TData>(null, message, false, error);
   }
 }
