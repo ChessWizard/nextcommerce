@@ -6,6 +6,8 @@ import upsertCartSchema from "@/lib/validators/cart/upsertCartSchema";
 import UpsertCartRequest from "@/types/cart/upsertCartRequest";
 import { useRouter } from "next/navigation";
 import { toast, Toaster } from "sonner";
+import { useTransition } from "react";
+import { Loader } from "lucide-react";
 
 const AddToCartButton = ({
     userId,
@@ -16,6 +18,7 @@ const AddToCartButton = ({
 }) => {
 
     const router = useRouter()
+    const [isPending, startTransition] = useTransition()
 
     const handleAddToCartAsync = async () => {
 
@@ -50,11 +53,14 @@ const AddToCartButton = ({
         <>
             <Button className="w-full"
                     onClick={() => {
-                        console.log("butona basıldı!")
-                        handleAddToCartAsync()
+                        startTransition(async () => {
+                            await handleAddToCartAsync()
+                        })
                     }}
             >
-                Add to Cart
+                {isPending ? (<Loader className="w-4 h-4 animate-spin" />)
+                           : "Add to Cart" }
+                
             </Button>
             <Toaster />
         </>
