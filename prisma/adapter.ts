@@ -10,6 +10,6 @@ const pool = new Pool({ connectionString });
 
 const adapter = new PrismaNeon(pool);
 
-const Database = new PrismaClient({ adapter })
+const database = new PrismaClient({ adapter })
 
-export default Database
+export default database

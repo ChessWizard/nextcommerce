@@ -5,7 +5,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import { NextAuthConfig } from "next-auth";
 
-
 export const config = {
   pages: {
     signIn: "sign-in",
@@ -76,6 +75,7 @@ export const config = {
         return session;
     },
   },
+  
 } satisfies NextAuthConfig;
 
 declare module "next-auth" {

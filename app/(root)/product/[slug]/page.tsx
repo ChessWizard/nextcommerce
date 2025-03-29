@@ -2,11 +2,12 @@ export const dynamic = 'force-dynamic'
 
 import { getProductDetailsBySlugAsync } from "@/lib/actions/product.actions";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { notFound } from "next/navigation";
 import ProductPrice from "@/components/product/productPrice";
 import ProductImages from "@/components/product/productImages";
+import { auth } from "@/auth/auth";
+import AddToCartButton from "@/components/cart/addToCartButton";
 
 const ProductDetailsPage = async (props: {
   params: Promise<{ slug: string }>;
@@ -14,6 +15,8 @@ const ProductDetailsPage = async (props: {
   const { slug } = await props.params;
   const productDetails = await getProductDetailsBySlugAsync(slug);
   if (!productDetails) notFound();
+
+  const session = await auth()
 
   return (
     <>
@@ -75,7 +78,10 @@ const ProductDetailsPage = async (props: {
                 </div>
                 {productDetails.stock > 0 && (
                     <div className="flex justify-center items-center">
-                        <Button className="w-full">Add to Cart</Button>
+                        <AddToCartButton
+                            userId={session?.user?.id}
+                            productId={productDetails.id}  
+                        />
                     </div>
                 )}
               </CardContent>

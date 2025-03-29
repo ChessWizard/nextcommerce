@@ -8,6 +8,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Products
+
 model Product{
     id              String @id @default(uuid()) @db.Uuid
     name            String
@@ -24,7 +26,11 @@ model Product{
     banner          String?
     createdAt       DateTime @default(now()) @db.Timestamp(6)
     modifiedAt      DateTime? @updatedAt @db.Timestamp(6)
+
+    cartItem CartItem[]
 }
+
+// Prices
 
 enum Currency{
   TRY
@@ -40,6 +46,7 @@ model Price{
   product    Product  @relation(fields: [productId], references: [id])
 }
 
+// Users
 model User {
   id            String @id @default(uuid()) @db.Uuid
   name          String? @default("UNKNOWN")
@@ -55,8 +62,10 @@ model User {
   paymentMethod String
   createdAt     DateTime @default(now()) @db.Timestamp(6)
   modifiedAt    DateTime? @updatedAt @db.Timestamp(6)
+
   accounts      Account[]
   sessions      Session[]
+  cart          Cart?
 }
 
 enum Role {
@@ -108,3 +117,41 @@ model VerificationToken {
  
   @@id([identifier, token])
 }
+
+// Carts
+
+model Cart {
+  id         String     @id @default(uuid()) @db.Uuid
+
+  userId     String?     @unique @default(uuid()) @db.Uuid
+  user       User?       @relation(fields: [userId], references: [id])
+  
+  cartItems  CartItem[]
+
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+  modifiedAt   DateTime? @updatedAt @db.Timestamp(6)
+}
+
+model CartItem {
+  id             String           @id @default(uuid()) @db.Uuid
+  quantity       Int
+  cartItemStatus CartItemStatus
+  isSelected     Boolean
+
+  cartId         String           @default(uuid()) @db.Uuid
+  cart           Cart             @relation(fields: [cartId], references: [id])
+
+  productId      String           @default(uuid()) @db.Uuid
+  product        Product          @relation(fields: [productId], references: [id])
+  
+  createdAt      DateTime         @default(now()) @db.Timestamp(6)
+  modifiedAt     DateTime         @updatedAt @db.Timestamp(6)
+
+  @@unique([cartId, productId], name: "cartId_productId_composite")
+}
+
+enum CartItemStatus {
+  ADDED
+  ADDED_BEFORE
+}
+

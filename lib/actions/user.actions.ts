@@ -6,7 +6,7 @@ import { Result } from "../results/result";
 import UserMessages from "../results/messages/userMessages";
 import { signUpFormSchema } from "../validators/user/signUpSchema";
 import { hashSync } from "bcrypt-ts-edge";
-import Database from "@/prisma/adapter";
+import database from "@/prisma/adapter";
 import { ErrorResult } from "../results/errorResult";
 
 export async function signInWithCredentialsAsync(
@@ -64,7 +64,7 @@ export async function signUpUserAsync(
         return Result.Error(UserMessages.Error.Failed).toJSON();
     }
 
-    const userFromMail = await Database.user
+    const userFromMail = await database.user
                                        .findFirst({
                                            where: {
                                                email: userData.email
@@ -79,7 +79,7 @@ export async function signUpUserAsync(
 
     try {
         
-        await Database.user.create({
+        await database.user.create({
             data: {
                 name: userData.name,
                 surname: userData.surname,
@@ -94,6 +94,7 @@ export async function signUpUserAsync(
         return Result.Success(UserMessages.Success.SignUp).toJSON()
 
     } catch (error) {
+        console.log(error)
         return Result.Error(UserMessages.Error.Failed).toJSON();
     }
 }
