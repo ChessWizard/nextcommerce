@@ -134,3 +134,52 @@ export async function retakeCartItemToCartAsync(
 
     return Result.Success(CartMessages.Success.ProductRetaked).toJSON()
 }
+
+export async function removeItemFromCartAsync(
+    userId: string,
+    cartItem: string
+){
+    const removalCartItem =  await database.cartItem
+                                    .findFirst({
+                                        where: {
+                                            id: cartItem,
+                                            cart: {
+                                              userId: userId,
+                                            },
+                                          },
+                                        }) as CartItem
+    
+    if(!removalCartItem)
+        return Result.Error(CartMessages.Error.NotFoundRemovalCartItem)
+
+    switch (removalCartItem.cartItemStatus) {
+        case CartItemStatus.ADDED:
+            handleAddedCartItemProcessAsync(removalCartItem)
+            return Result.Success(CartMessages.Success.CartItemChangedToAddedBefore)
+        
+        case CartItemStatus.ADDED_BEFORE:
+            await handleAddedBeforeCartItemProcessAsync(removalCartItem.id)
+            return Result.Success(CartMessages.Success.CartItemRemoved)
+        default:
+            return Result.Error(CartMessages.Error.NotFoundRemovalCartItem)
+    }
+}
+
+async function handleAddedCartItemProcessAsync(cartItem: CartItem) {
+    await database.cartItem.update({
+      where: { id: cartItem.id },
+      data: {
+        cartItemStatus: CartItemStatus.ADDED_BEFORE,
+        isSelected: false,
+      },
+    });
+  }
+
+async function handleAddedBeforeCartItemProcessAsync(cartItemId: string){
+    await database.cartItem
+            .delete({
+                where: {
+                    id: cartItemId
+                }
+            })
+}

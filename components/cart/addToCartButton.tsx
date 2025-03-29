@@ -5,7 +5,6 @@ import { upsertCartAsync } from "@/lib/actions/cart.actions";
 import upsertCartSchema from "@/lib/validators/cart/upsertCartSchema";
 import UpsertCartRequest from "@/types/cart/upsertCartRequest";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { toast, Toaster } from "sonner";
 
 const AddToCartButton = ({
