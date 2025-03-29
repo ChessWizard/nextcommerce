@@ -5,12 +5,14 @@ const CartMessages: {
     AddedToCart: BusinessMessage,
     ProductRetaked: BusinessMessage,
     CartItemChangedToAddedBefore: BusinessMessage,
-    CartItemRemoved: BusinessMessage
+    CartItemRemoved: BusinessMessage,
+    CartFound: BusinessMessage
   },
   Error: {
     NotFoundProductRetakeToCart: BusinessMessage,
     NotFoundRemovalCartItem: BusinessMessage,
-    ProductAlreadyAdded: BusinessMessage
+    ProductAlreadyAdded: BusinessMessage,
+    CartEmpty: BusinessMessage
   };
 } = {
   Success: {
@@ -29,6 +31,11 @@ const CartMessages: {
     CartItemRemoved: {
         message: "Cart item removed.",
         code: "CRT20003",
+        httpStatus: 200,
+    },
+    CartFound: {
+        message: "Cart found.",
+        code: "CRT20004",
         httpStatus: 200,
     },
 
@@ -57,6 +64,11 @@ const CartMessages: {
     NotFoundRemovalCartItem: {
         message: "Product not found for remove",
         code: "CRT40402",
+        httpStatus: 404
+    },
+    CartEmpty: {
+        message: "Your cart is empty.",
+        code: "CRT40403",
         httpStatus: 404
     }
   },

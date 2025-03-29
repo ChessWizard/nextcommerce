@@ -59,8 +59,7 @@ const AddToCartButton = ({
                     }}
             >
                 {isPending ? (<Loader className="w-4 h-4 animate-spin" />)
-                           : "Add to Cart" }
-                
+                           : "Add to Cart" }               
             </Button>
             <Toaster />
         </>

@@ -7,6 +7,8 @@ import ProductMessages from "../results/messages/productMessages";
 import { CartConstants } from "../constants/cartConstants";
 import { CartItem, CartItemStatus } from "@prisma/client";
 import CartMessages from "../results/messages/cartMessages";
+import CartDTO from "@/types/cart/cartDTO";
+import cartSchema from "../validators/cart/cartSchema";
 
 export async function upsertCartAsync(
     data: UpsertCartRequest
@@ -182,4 +184,38 @@ async function handleAddedBeforeCartItemProcessAsync(cartItemId: string){
                     id: cartItemId
                 }
             })
+}
+
+export async function getCartAsync(userId: string)
+    : Promise<Result<CartDTO>>{
+
+    const userCart = await database.cart
+                             .findFirst({
+                                where: {
+                                    userId: userId
+                                },
+                                include: {
+                                    cartItems: {
+                                        include: {
+                                            product: {
+                                                include: {
+                                                    prices: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                             })
+
+    if(!userCart || userCart.cartItems.length === 0)
+        return Result.Error(CartMessages.Error.CartEmpty)
+
+    const userCartDtoResult = cartSchema.safeParse(userCart)
+    if(!userCartDtoResult.success){
+        console.log(userCartDtoResult.error)
+        return Result.Error(CartMessages.Error.CartEmpty)
+    }
+        
+    const userCartDto = userCartDtoResult.data
+    return Result.Success<CartDTO>(userCartDto, CartMessages.Success.CartFound)
 }
