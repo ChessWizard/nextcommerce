@@ -51,12 +51,18 @@ const AddToCartButton = ({
 
     return ( 
         <>
-            <Button className="w-full"
+            <Button className="w-full
+                               bg-seagreen
+                               font-bold 
+                               disabled:bg-black
+                               disabled:opacity-80
+                               disabled:cursor-not-allowed"
                     onClick={() => {
                         startTransition(async () => {
                             await handleAddToCartAsync()
                         })
                     }}
+                    disabled={isPending}
             >
                 {isPending ? (<Loader className="w-4 h-4 animate-spin" />)
                            : "Add to Cart" }               

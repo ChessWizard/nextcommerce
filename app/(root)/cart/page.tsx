@@ -1,9 +1,9 @@
 import { Metadata } from "next";
-import CartTable from "./cartTable";
 import { getCartAsync } from "@/lib/actions/cart.actions";
 import { auth } from "@/auth/auth";
 import { redirect } from "next/navigation";
 import CartDTO from "@/types/cart/cartDTO";
+import CartTable from "@/components/cart/cartTable";
 
 const CartPage = async () => {
 
