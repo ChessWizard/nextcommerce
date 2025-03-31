@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CartItemDTO from "@/types/cart/cartItemDTO";
-import CartItemCard from "./cartItemCard";
+import CartItemCardContainer from "./cartItemCardContainer";
 
 const CartTable = ({
   data,
@@ -15,6 +15,23 @@ const CartTable = ({
   data: CartDTO | null;
   message: string;
 }) => {
+  
+  type BrandGroupedItems = Record<string, CartItemDTO[]>;
+
+  const groupedCartItemsByBrand = data?.cartItems?.reduce((acc, cartItem) => {
+    const brandName = cartItem.product.brand;
+    if (!acc[brandName]) {
+      acc[brandName] = [];
+    }
+    acc[brandName].push(cartItem);
+    return acc;
+  }, {} as BrandGroupedItems) as Record<string, CartItemDTO[]>;
+
+  const brandGroups = Object.entries(groupedCartItemsByBrand).map(([brand, items]) => ({
+    brand,
+    items,
+  }));
+
   return (
     <>
       {!data || data.cartItems.length == 0 ? (
@@ -44,9 +61,9 @@ const CartTable = ({
             Shopping Cart {`(${data.totalGroupedQuantity} Products)`}
           </h1>
           <div className="grid grid-cols-1 gap-4">
-            {data.cartItems.map((cartItem: CartItemDTO) => (
-                <CartItemCard data={cartItem} key={cartItem.product.id} />
-            ) )}
+            {brandGroups.map(({ brand, items }, index) => (
+               <CartItemCardContainer brand={brand} items={items} key={index} /> 
+            ))}
           </div>
         </>
       )}

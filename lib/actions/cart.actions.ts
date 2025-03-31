@@ -9,6 +9,9 @@ import { CartItem, CartItemStatus } from "@prisma/client";
 import CartMessages from "../results/messages/cartMessages";
 import CartDTO from "@/types/cart/cartDTO";
 import cartSchema from "../validators/cart/cartSchema";
+import { auth } from "@/auth/auth";
+
+const session = await auth()
 
 export async function upsertCartAsync(
     data: UpsertCartRequest
@@ -210,6 +213,10 @@ export async function getCartAsync(userId: string)
     if(!userCart || userCart.cartItems.length === 0)
         return Result.Error(CartMessages.Error.CartEmpty)
 
+    userCart.cartItems = userCart.cartItems.sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
     const userCartDtoResult = cartSchema.safeParse(userCart)
     if(!userCartDtoResult.success){
         console.log(userCartDtoResult.error)
@@ -218,4 +225,52 @@ export async function getCartAsync(userId: string)
         
     const userCartDto = userCartDtoResult.data
     return Result.Success<CartDTO>(userCartDto, CartMessages.Success.CartFound)
+}
+
+export async function updateCartItemAsync(
+    cartItemId: string,
+    quantity?: number,
+    isSelected?: boolean
+){
+
+    const userCartItem = await database.cart.findFirst({
+        where: {
+          userId: session?.user.id,
+          cartItems: {
+            some: { id: cartItemId },
+          },
+        },
+        include: {
+          cartItems: {
+            where: { id: cartItemId },
+          },
+        },
+      });
+    
+      if (!userCartItem || userCartItem.cartItems.length === 0) {
+        return Result.Error(CartMessages.Error.NotFoundCartItem).toJSON()
+      }
+    
+      const [cartItem] = userCartItem.cartItems;
+    
+      const dataToUpdate: {
+        quantity?: number;
+        isSelected?: boolean;
+      } = {};
+    
+      if (quantity != null) {
+        dataToUpdate.quantity = quantity;
+      }
+      if (isSelected != null) {
+        dataToUpdate.isSelected = isSelected;
+      }
+
+      await database.cartItem.update({
+        where: { id: cartItem.id },
+        data: dataToUpdate,
+      });
+    
+      return Result.Success(
+        CartMessages.Success.AddedToCart
+      ).toJSON()
 }

@@ -12,7 +12,8 @@ const CartMessages: {
     NotFoundProductRetakeToCart: BusinessMessage,
     NotFoundRemovalCartItem: BusinessMessage,
     ProductAlreadyAdded: BusinessMessage,
-    CartEmpty: BusinessMessage
+    CartEmpty: BusinessMessage,
+    NotFoundCartItem: BusinessMessage
   };
 } = {
   Success: {
@@ -70,7 +71,12 @@ const CartMessages: {
         message: "Your cart is empty.",
         code: "CRT40403",
         httpStatus: 404
-    }
+    },
+    NotFoundCartItem: {
+        message: "Cart item not found",
+        code: "CRT40404",
+        httpStatus: 404
+    },
   },
 };
 
