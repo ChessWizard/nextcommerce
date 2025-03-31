@@ -11,8 +11,6 @@ import CartDTO from "@/types/cart/cartDTO";
 import cartSchema from "../validators/cart/cartSchema";
 import { auth } from "@/auth/auth";
 
-const session = await auth()
-
 export async function upsertCartAsync(
     data: UpsertCartRequest
 ){
@@ -232,6 +230,8 @@ export async function updateCartItemAsync(
     quantity?: number,
     isSelected?: boolean
 ){
+
+    const session = await auth()
 
     const userCartItem = await database.cart.findFirst({
         where: {
