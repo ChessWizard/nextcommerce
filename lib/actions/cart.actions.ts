@@ -236,9 +236,6 @@ export async function updateCartItemAsync(
     const userCartItem = await database.cart.findFirst({
         where: {
           userId: session?.user.id,
-          cartItems: {
-            some: { id: cartItemId },
-          },
         },
         include: {
           cartItems: {
@@ -258,7 +255,7 @@ export async function updateCartItemAsync(
         isSelected?: boolean;
       } = {};
     
-      if (quantity != null) {
+      if (quantity != null && quantity >= CartConstants.CART_ITEM_DEFAULT_INCREMENT) {
         dataToUpdate.quantity = quantity;
       }
       if (isSelected != null) {

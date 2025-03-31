@@ -141,7 +141,7 @@ const CartItemCardContent = ({ data }: { data: CartItemDTO }) => {
         </div>
         <div className="ml-auto">
           <div className="flex items-center gap-3 mb-5">
-            <Trash size={20} />
+            <Trash className="m-auto" size={20} />
             <span className="text-xs hidden md:block">Remove</span>
           </div>
           <ProductPrice value={price.value * quantity}
