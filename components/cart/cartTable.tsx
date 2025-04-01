@@ -7,6 +7,7 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CartItemDTO from "@/types/cart/cartItemDTO";
 import CartItemCardContainer from "./cartItemCardContainer";
+import CartSummaryCard from "./cartSummaryCard";
 
 const CartTable = ({
   data,
@@ -15,7 +16,6 @@ const CartTable = ({
   data: CartDTO | null;
   message: string;
 }) => {
-  
   type BrandGroupedItems = Record<string, CartItemDTO[]>;
 
   const groupedCartItemsByBrand = data?.cartItems?.reduce((acc, cartItem) => {
@@ -27,10 +27,12 @@ const CartTable = ({
     return acc;
   }, {} as BrandGroupedItems) as Record<string, CartItemDTO[]>;
 
-  const brandGroups = Object.entries(groupedCartItemsByBrand).map(([brand, items]) => ({
-    brand,
-    items,
-  }));
+  const brandGroups = Object.entries(groupedCartItemsByBrand).map(
+    ([brand, items]) => ({
+      brand,
+      items,
+    })
+  );
 
   return (
     <>
@@ -57,13 +59,26 @@ const CartTable = ({
         </>
       ) : (
         <>
-          <h1 className="py-4 h3-bold">
-            Shopping Cart {`(${data.totalGroupedQuantity} Products)`}
-          </h1>
-          <div className="grid grid-cols-1 gap-4">
-            {brandGroups.map(({ brand, items }, index) => (
-               <CartItemCardContainer brand={brand} items={items} key={index} /> 
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-6 md:gap-4">
+            <div className="cartDetails col-span-1 md:col-span-4 lg:col-span-4">
+              <h1 className="py-4 h3-bold">
+                Shopping Cart {`(${data.totalGroupedQuantity} Products)`}
+              </h1>
+              <div className="grid grid-cols-1 gap-4">
+                {brandGroups.map(({ brand, items }, index) => (
+                  <CartItemCardContainer
+                    brand={brand}
+                    items={items}
+                    key={index}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="cartSummary shadow-md w-auto mt-5 col-span-1 md:col-span-2 lg:col-span-2">
+              <div className="sticky top-4">
+                <CartSummaryCard totalPrice={data.totalPrice} />
+              </div>
+            </div>
           </div>
         </>
       )}
