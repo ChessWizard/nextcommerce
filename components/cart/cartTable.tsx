@@ -18,6 +18,7 @@ const CartTable = ({
 }) => {
   type BrandGroupedItems = Record<string, CartItemDTO[]>;
 
+  
   const groupedCartItemsByBrand = data?.cartItems?.reduce((acc, cartItem) => {
     const brandName = cartItem.product.brand;
     if (!acc[brandName]) {
@@ -27,12 +28,15 @@ const CartTable = ({
     return acc;
   }, {} as BrandGroupedItems) as Record<string, CartItemDTO[]>;
 
-  const brandGroups = Object.entries(groupedCartItemsByBrand).map(
-    ([brand, items]) => ({
-      brand,
-      items,
-    })
-  );
+  let brandGroups
+  if(groupedCartItemsByBrand) {
+    brandGroups = Object.entries(groupedCartItemsByBrand).map(
+      ([brand, items]) => ({
+        brand,
+        items,
+      })
+    );
+  }
 
   return (
     <>
@@ -65,7 +69,7 @@ const CartTable = ({
                 Shopping Cart {`(${data.totalGroupedQuantity} Products)`}
               </h1>
               <div className="grid grid-cols-1 gap-4">
-                {brandGroups.map(({ brand, items }, index) => (
+                {brandGroups && brandGroups.map(({ brand, items }, index) => (
                   <CartItemCardContainer
                     brand={brand}
                     items={items}
