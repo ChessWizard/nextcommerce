@@ -11,6 +11,7 @@ import { Loader, Minus, Plus, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { updateCartItemAsync } from "@/lib/actions/cart.actions";
 import ProductPrice from "../product/productPrice";
+import { useCart } from "@/contexts/cartContext";
 
 const CartItemCardContent = ({ data }: { data: CartItemDTO }) => {
   const cartItemId = data.id;
@@ -22,12 +23,40 @@ const CartItemCardContent = ({ data }: { data: CartItemDTO }) => {
   const isSelected = data.isSelected;
   const slug = `/product/${product.slug}`;
   const cartItemQuantity = data.quantity;
-  const price = product.prices[0]
+  const price = product.prices[0];
 
+  const { cart, updateCart } = useCart();
   const [isCartItemSelected, setIsCartItemSelected] = useState(isSelected);
   const [isQuantityPending, startQuantityTransition] = useTransition();
   const [quantity, setQuantity] = useState(cartItemQuantity);
   const [isSelectPending, startSelectQuantityTransition] = useTransition();
+
+  const updateCartState = (newQuantity: number) => {
+    if (!cart) return;
+
+    const updatedCartItems = cart.cartItems.map(item => {
+      if (item.id === cartItemId) {
+        return {
+          ...item,
+          quantity: newQuantity
+        };
+      }
+      return item;
+    });
+
+    const processableCartItems = updatedCartItems.filter(item => item.isSelected);
+    const totalQuantity = processableCartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = processableCartItems.reduce((sum, item) => sum + item.quantity * (item.product.prices[0].value || 0), 0);
+    const totalGroupedQuantity = processableCartItems.length;
+
+    updateCart({
+      ...cart,
+      cartItems: updatedCartItems,
+      totalPrice,
+      totalQuantity,
+      totalGroupedQuantity
+    });
+  };
 
   return (
     <>
@@ -47,7 +76,33 @@ const CartItemCardContent = ({ data }: { data: CartItemDTO }) => {
                   null!,
                   checkStatus
                 );
-                if (result.isSuccessful) setIsCartItemSelected(checkStatus);
+                if (result.isSuccessful) {
+                  setIsCartItemSelected(checkStatus);
+                  if (cart) {
+                    const updatedCartItems = cart.cartItems.map(item => {
+                      if (item.id === cartItemId) {
+                        return {
+                          ...item,
+                          isSelected: checkStatus
+                        };
+                      }
+                      return item;
+                    });
+
+                    const processableCartItems = updatedCartItems.filter(item => item.isSelected);
+                    const totalQuantity = processableCartItems.reduce((sum, item) => sum + item.quantity, 0);
+                    const totalPrice = processableCartItems.reduce((sum, item) => sum + item.quantity * (item.product.prices[0].value || 0), 0);
+                    const totalGroupedQuantity = processableCartItems.length;
+
+                    updateCart({
+                      ...cart,
+                      cartItems: updatedCartItems,
+                      totalPrice,
+                      totalQuantity,
+                      totalGroupedQuantity
+                    });
+                  }
+                }
               })
             }
           />
@@ -106,7 +161,10 @@ const CartItemCardContent = ({ data }: { data: CartItemDTO }) => {
                       cartItemId,
                       quantity - 1
                     );
-                    if (result.isSuccessful) setQuantity(quantity - 1);
+                    if (result.isSuccessful) {
+                      setQuantity(quantity - 1);
+                      updateCartState(quantity - 1);
+                    }
                   })
                 }
               >
@@ -128,7 +186,10 @@ const CartItemCardContent = ({ data }: { data: CartItemDTO }) => {
                       cartItemId,
                       quantity + 1
                     );
-                    if (result.isSuccessful) setQuantity(quantity + 1);
+                    if (result.isSuccessful) {
+                      setQuantity(quantity + 1);
+                      updateCartState(quantity + 1);
+                    }
                   })
                 }
               >
