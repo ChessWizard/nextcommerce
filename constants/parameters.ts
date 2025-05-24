@@ -1,0 +1,1 @@
+export const DEFAULT_COUNTRY_ID: string = "f613dc36-1f64-4149-9cd0-640cb4a50b59"// Turkiye

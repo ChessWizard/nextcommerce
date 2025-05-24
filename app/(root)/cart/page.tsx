@@ -6,6 +6,7 @@ import CartTable from "@/components/cart/cartTable";
 import CartSummaryCard from "@/components/cart/cartSummaryCard";
 import { CartProvider } from "@/contexts/cartContext";
 import { redirect } from "next/navigation";
+import { ButtonDTO, LinkTargetType } from "@/types/components/button";
 
 const CartPage = async () => {
   const session = await auth();
@@ -24,6 +25,12 @@ const CartPage = async () => {
     );
   }
 
+  const shippingAddressNavigationButton: ButtonDTO = {
+    title: "Confirm Cart",
+    link: "/shipping-address",
+    target: LinkTargetType.SELF
+  }
+
   return (
     <>
       <div className="container mx-auto px-4 py-8">
@@ -32,7 +39,7 @@ const CartPage = async () => {
             <CartTable />
             <div className="cartSummary mt-5 col-span-1 md:col-span-2 lg:col-span-2">
               <div className="sticky top-4">
-                <CartSummaryCard />
+                <CartSummaryCard button={shippingAddressNavigationButton} />
               </div>
             </div>
           </div>

@@ -58,7 +58,6 @@ model User {
   image         String?
   password      String?
   role          Role  @default(USER)
-  address       Json? @db.Json
   paymentMethod String
   createdAt     DateTime @default(now()) @db.Timestamp(6)
   modifiedAt    DateTime? @updatedAt @db.Timestamp(6)
@@ -66,6 +65,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   cart          Cart?
+  addresses     Address[]
 }
 
 enum Role {
@@ -153,5 +153,73 @@ model CartItem {
 enum CartItemStatus {
   ADDED
   ADDED_BEFORE
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+model Address {
+  id             String           @id @default(uuid()) @db.Uuid
+  userId         String           @default(uuid()) @db.Uuid
+  user           User             @relation(fields: [userId], references: [id])
+  name           String
+  surname        String
+  phone          String           @unique
+  countryId      String           @default(uuid()) @db.Uuid
+  country        Country          @relation(fields: [countryId], references: [id])
+  cityId         String           @default(uuid()) @db.Uuid
+  city           City             @relation(fields: [cityId], references: [id])
+  districtId     String           @default(uuid()) @db.Uuid
+  district       District         @relation(fields: [districtId], references: [id])
+  neighborhoodId String           @default(uuid()) @db.Uuid
+  neighborhood   Neighborhood     @relation(fields: [neighborhoodId], references: [id])
+  title          String
+  detail         String
+  latitude       Float
+  longitude      Float
+  zip            String
+  addressType    AddressType
+
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+  modifiedAt   DateTime? @updatedAt @db.Timestamp(6)
+}
+
+model Country {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String
+  cities         City[]
+
+  Address Address[]
+}
+
+model City {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String
+  countryId      String           @default(uuid()) @db.Uuid
+  country        Country          @relation(fields: [countryId], references: [id])
+  districts      District[]
+
+  Address Address[]
+}
+
+model District {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String
+  cityId         String           @default(uuid()) @db.Uuid
+  city           City             @relation(fields: [cityId], references: [id])
+  neighborhoods  Neighborhood[]
+
+  Address Address[]
+}
+
+model Neighborhood {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String
+  districtId     String           @default(uuid()) @db.Uuid
+  district       District         @relation(fields: [districtId], references: [id])
+
+  Address Address[]
 }
 

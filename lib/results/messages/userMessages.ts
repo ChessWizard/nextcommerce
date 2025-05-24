@@ -4,6 +4,7 @@ const UserMessages: {
   Success: {
     SignIn: BusinessMessage
     SignUp: BusinessMessage
+    Found: BusinessMessage
   },
   Error: {
     InvalidPassword: BusinessMessage
@@ -20,6 +21,13 @@ const UserMessages: {
       code: "USR20001",
       httpStatus: 200,
     },
+
+    Found: {
+      message: "User found.",
+      code: "USR20002",
+      httpStatus: 200,
+    },
+
     //204
     SignUp: {
         message: "Sign up successfully.",
